@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+    database:
+        image: mongo
+        restart: always
+        volumes:
+            - my_data:/data/db
+    node-back:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            - SERVER_DB_HOST=mongodb://database:27017/rest-exercise-db
+        depends_on:
+            - database
+        ports:
+            - "4000:4000"
+    front:
+        build:
+            context: ./../tp-front-tdd
+            dockerfile: Dockerfile
+        depends_on:
+            - node-back
+        ports:
+            - "3000:3000"
+
+volumes:
+    my_data:
